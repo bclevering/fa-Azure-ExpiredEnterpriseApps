@@ -23,7 +23,7 @@ if (-Not (Test-Path -Path ENV:WEBSITE_HOSTNAME)) {
 }
 
 try {
-  $apiEndpointUrl = "https://$($env:WEBSITE_HOSTNAME)/api/GetExpiredSecrets"
+  $apiEndpointUrl = "https://$($env:WEBSITE_HOSTNAME)/api/GetExpiredSecrets?code=4GydB900uwwKFZLhmPkWxB1IwoeBNF2L64LqDlLC3B9xAzFu6MsJHg%3D%3D"
   $apiFunctionKey = $env:API_FUNCTION_KEY
 
   Write-Host "Calling API at $apiEndpointUrl with Function Key."
