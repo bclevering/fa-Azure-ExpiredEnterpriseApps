@@ -104,7 +104,7 @@ try {
        return
     }
 
-<#     $Owner = Get-ApplicationOwner -ApplicationObjectId $AppObjectId
+    $Owner = Get-ApplicationOwner -ApplicationObjectId $AppObjectId
 
     return [ExpiredAppInformation]@{
       ApplicationName     = $AppName
@@ -113,7 +113,7 @@ try {
       OwnerId             = $Owner.Id
       OwnerUsername       = $Owner.Username
       ExpiredSecrets      = $ExpiredSecrets
-    } #>
+    }
    }
 } catch {
   Write-Error "Failed to retrieve Azure AD applications."
@@ -126,6 +126,5 @@ try {
 
 Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
     StatusCode = [System.Net.HttpStatusCode]::OK
-    Body       = "DONE"
-    #$appsToExpire | ConvertTo-Json -Depth 10
+    Body       = $appsToExpire | ConvertTo-Json -Depth 10
   }) -Clobber
