@@ -64,7 +64,7 @@ try {
 Write-Host "Retrieving all Azure AD applications with secrets that are due to expire in $DueDays days or less."
 
 ## Retrieve all Azure AD applications and filter them by secrets to be expired
-<# try {
+try {
   $AppsToExpire = Get-MgApplication -All -ErrorAction Stop | ForEach-Object {
 
     Write-Host "Processing application `"$($_.DisplayName)`"."
@@ -77,7 +77,7 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
     $AppCredentials = Get-MgApplication -ApplicationId $AppObjectId | Select-Object PasswordCredentials
     $Secrets = $AppCredentials.PasswordCredentials
 
-    $ExpiredSecrets = New-Object -TypeName System.Collections.Generic.List[ExpiredAppCredentials]
+<#     $ExpiredSecrets = New-Object -TypeName System.Collections.Generic.List[ExpiredAppCredentials]
 
     foreach ($secret in $Secrets) {
       $SecretName = $secret.DisplayName
@@ -95,7 +95,7 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
             Expired        = $Remaining.TotalSeconds -le 0
           })
       }
-    }
+    } #>
 
     # Return if the application has no secrets to expire
     if ($ExpiredSecrets.Count -eq 0 ) {
@@ -103,7 +103,7 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
       return
     }
 
-    $Owner = Get-ApplicationOwner -ApplicationObjectId $AppObjectId
+<#     $Owner = Get-ApplicationOwner -ApplicationObjectId $AppObjectId
 
     return [ExpiredAppInformation]@{
       ApplicationName     = $AppName
@@ -112,7 +112,7 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
       OwnerId             = $Owner.Id
       OwnerUsername       = $Owner.Username
       ExpiredSecrets      = $ExpiredSecrets
-    }
+    } #>
   }
 } catch {
   Write-Error "Failed to retrieve Azure AD applications."
@@ -121,7 +121,7 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
       Body       = "Failed to retrieve Azure AD applications."
     }) -Clobber
   throw $_
-} #>
+}
 
 Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
     StatusCode = [System.Net.HttpStatusCode]::OK
