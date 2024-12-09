@@ -2,7 +2,7 @@
 param($Request, $TriggerMetadata)
 
 $ErrorActionPreference = "Stop"
-<# 
+
 function Get-ApplicationOwner {
   param (
     [Parameter(
@@ -30,7 +30,7 @@ function Get-ApplicationOwner {
     Username = $Username
   }
 }
- #>
+
 
 # Print some information about the request
 Write-Host "PowerShell HTTP trigger function processed a request."
