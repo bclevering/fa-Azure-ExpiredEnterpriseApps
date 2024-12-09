@@ -67,14 +67,13 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
 
 ## Retrieve all Azure AD applications and filter them by secrets to be expired
 try {
-  $AppsToExpire = Get-MgApplication -All -ErrorAction Stop
-  foreach ($app in $appsToExpire) {
+  $AppsToExpire = Get-MgApplication -All -ErrorAction Stop | ForEach-Object {
 
-    Write-Host "Processing application `"$($app.DisplayName)`"."
+    Write-Host "Processing application `"$($_.DisplayName)`"."
 
-    $AppName = $app.DisplayName
-    $AppId = $app.AppId
-    $AppObjectId = $app.Id
+    $AppName = $PSItem.DisplayName
+    $AppId = $PSItem.AppId
+    $AppObjectId = $PSItem.Id
 
     # ToDo: Also check for certificates that are due to expire (KeyCredentials)
     $AppCredentials = Get-MgApplication -ApplicationId $AppObjectId | Select-Object PasswordCredentials
