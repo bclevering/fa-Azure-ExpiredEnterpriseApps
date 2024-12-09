@@ -27,11 +27,7 @@ try {
   $apiFunctionKey = $env:API_FUNCTION_KEY
 
   Write-Host "Calling API at $apiEndpointUrl with Function Key."
-  $expiredSecrets = Invoke-RestMethod -Method Get `
-    -Headers @{
-    "x-functions-key" = $apiFunctionKey
-  } `
-    -Uri $apiEndpointUrl
+  $expiredSecrets = Invoke-RestMethod -Method Get -Headers @{"x-functions-key" = $apiFunctionKey} -Uri $apiEndpointUrl
 
   $expiredSecrets | Select-Object -Property ApplicationName, OwnerUsername -ExpandProperty ExpiredSecrets
 } catch {
