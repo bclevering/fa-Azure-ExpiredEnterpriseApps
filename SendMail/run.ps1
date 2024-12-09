@@ -15,6 +15,7 @@ Write-Host "PowerShell timer trigger function ran! TIME: $currentUTCtime"
 ## Check existance of required environment variables
 if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
   Write-Warning "API_FUNCTION_KEY environment variable is not set. Calling the backend API may fail."
+  exit 1
 }
 if (-Not (Test-Path -Path ENV:WEBSITE_HOSTNAME)) {
   Write-Error "WEBSITE_HOSTNAME environment variable is not set."

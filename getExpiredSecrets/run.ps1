@@ -2,7 +2,7 @@
 param($Request, $TriggerMetadata)
 
 $ErrorActionPreference = "Stop"
-
+<# 
 function Get-ApplicationOwner {
   param (
     [Parameter(
@@ -30,7 +30,7 @@ function Get-ApplicationOwner {
     Username = $Username
   }
 }
-
+ #>
 
 # Print some information about the request
 Write-Host "PowerShell HTTP trigger function processed a request."
@@ -44,8 +44,8 @@ Write-Host "Received $requestMethod request from $remoteAddress. User Agent: $($
 # ...
 
 $Now = Get-Date
-
-try {
+$DueDays = 30
+<# try {
   $DueDays = $Request.Body.days
 
   if (-not $DueDays) {
@@ -59,12 +59,12 @@ try {
       Body       = "Failed to retrieve days parameter from request body."
     }) -Clobber
   throw $_
-}
+} #>
 
 Write-Host "Retrieving all Azure AD applications with secrets that are due to expire in $DueDays days or less."
 
 ## Retrieve all Azure AD applications and filter them by secrets to be expired
-try {
+<# try {
   $AppsToExpire = Get-MgApplication -All -ErrorAction Stop | ForEach-Object {
 
     Write-Host "Processing application `"$($_.DisplayName)`"."
@@ -121,9 +121,10 @@ try {
       Body       = "Failed to retrieve Azure AD applications."
     }) -Clobber
   throw $_
-}
+} #>
 
 Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
     StatusCode = [System.Net.HttpStatusCode]::OK
-    Body       = $appsToExpire | ConvertTo-Json -Depth 10
+    Body       = "DONE"
+    #$appsToExpire | ConvertTo-Json -Depth 10
   }) -Clobber
