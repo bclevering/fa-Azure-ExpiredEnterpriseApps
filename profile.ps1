@@ -12,45 +12,45 @@
 # Authenticate with Azure PowerShell using MSI.
 # Remove this if you are not planning on using MSI or Azure PowerShell.
 if ($env:MSI_SECRET) {
-    try {
-      Write-Verbose "Authenticating with Azure PowerShell using Managed Identity."
-      Disable-AzContextAutosave -Scope Process | Out-Null
-      Connect-AzAccount -Identity | Out-Null
-    } catch {
-      Write-Error "Failed to authenticate with Azure PowerShell using Managed Identity."
-      throw $_
-    }
+  try {
+    Write-Verbose "Authenticating with Azure PowerShell using Managed Identity."
+    Disable-AzContextAutosave -Scope Process | Out-Null
+    Connect-AzAccount -Identity | Out-Null
+  } catch {
+    Write-Error "Failed to authenticate with Azure PowerShell using Managed Identity."
+    throw $_
   }
-  
-  # Authenticate with Microsoft Graph using MSI.
-  if ($env:MSI_SECRET) {
-    try {
-      Write-Verbose "Authenticating with Microsoft Graph using Managed Identity."
-      Connect-MgGraph -Identity -NoWelcome
-    } catch {
-      Write-Error "Failed to authenticate with Microsoft Graph using Managed Identity."
-      throw $_
-    }
+}
+
+# Authenticate with Microsoft Graph using MSI.
+if ($env:MSI_SECRET) {
+  try {
+    Write-Verbose "Authenticating with Microsoft Graph using Managed Identity."
+    Connect-MgGraph -Identity -NoWelcome
+  } catch {
+    Write-Error "Failed to authenticate with Microsoft Graph using Managed Identity."
+    throw $_
   }
-  
-  # Uncomment the next line to enable legacy AzureRm alias in Azure PowerShell.
-  # Enable-AzureRmAlias
-  
-  # You can also define functions or aliases that can be referenced in any of your PowerShell functions.
-  
-  class ExpiredAppCredentials {
-    [String] $SecretName
-    [DateTime] $ExpirationTime
-    # hidden [TimeSpan] $Remaning
-    [Int] $RemainingDays
-    [Bool] $Expired
-  }
-  
-  class ExpiredAppInformation {
-    [String] $ApplicationName
-    [String] $ApplicationID
-    [String] $ApplicationObjectId
-    [String] $OwnerId
-    [String] $OwnerUsername
-    [ExpiredAppCredentials[]] $ExpiredSecrets
-  }
+}
+
+# Uncomment the next line to enable legacy AzureRm alias in Azure PowerShell.
+# Enable-AzureRmAlias
+
+# You can also define functions or aliases that can be referenced in any of your PowerShell functions.
+
+class ExpiredAppCredentials {
+  [String] $SecretName
+  [DateTime] $ExpirationTime
+  # hidden [TimeSpan] $Remaning
+  [Int] $RemainingDays
+  [Bool] $Expired
+}
+
+class ExpiredAppInformation {
+  [String] $ApplicationName
+  [String] $ApplicationID
+  [String] $ApplicationObjectId
+  [String] $OwnerId
+  [String] $OwnerUsername
+  [ExpiredAppCredentials[]] $ExpiredSecrets
+}
