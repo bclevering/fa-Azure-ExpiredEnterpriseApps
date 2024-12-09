@@ -69,13 +69,13 @@ try {
 
     Write-Host "Processing application `"$($_.DisplayName)`"."
 
-    $AppName = $PSItem.DisplayName
-    $AppId = $PSItem.AppId
-    $AppObjectId = $PSItem.Id
+    # $AppName = $PSItem.DisplayName
+    # $AppId = $PSItem.AppId
+    # $AppObjectId = $PSItem.Id
 
     # ToDo: Also check for certificates that are due to expire (KeyCredentials)
-    $AppCredentials = Get-MgApplication -ApplicationId $AppObjectId | Select-Object PasswordCredentials
-    $Secrets = $AppCredentials.PasswordCredentials
+    # $AppCredentials = Get-MgApplication -ApplicationId $AppObjectId | Select-Object PasswordCredentials
+    # $Secrets = $AppCredentials.PasswordCredentials
 
 <#     $ExpiredSecrets = New-Object -TypeName System.Collections.Generic.List[ExpiredAppCredentials]
 
