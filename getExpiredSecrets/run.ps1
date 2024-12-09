@@ -44,8 +44,8 @@ Write-Host "Received $requestMethod request from $remoteAddress. User Agent: $($
 # ...
 
 $Now = Get-Date
-$DueDays = 30
-<# try {
+
+try {
   $DueDays = $Request.Body.days
 
   if (-not $DueDays) {
@@ -59,7 +59,7 @@ $DueDays = 30
       Body       = "Failed to retrieve days parameter from request body."
     }) -Clobber
   throw $_
-} #>
+}
 
 Write-Host "Retrieving all Azure AD applications with secrets that are due to expire in $DueDays days or less."
 
