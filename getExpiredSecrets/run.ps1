@@ -46,7 +46,9 @@ Write-Host "Received $requestMethod request from $remoteAddress. User Agent: $($
 $Now = Get-Date
 
 try {
-  $DueDays = $Request.Body.days
+  $headers = $request.Headers
+  
+  $DueDays = $headers["Days"]
 
   if (-not $DueDays) {
     Write-Host "No days parameter provided, using default value of 30 days."
