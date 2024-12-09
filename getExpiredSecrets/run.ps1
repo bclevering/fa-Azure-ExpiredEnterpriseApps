@@ -65,9 +65,10 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
 
 ## Retrieve all Azure AD applications and filter them by secrets to be expired
 try {
-  $AppsToExpire = Get-MgApplication -All -ErrorAction Stop | ForEach-Object {
+  $AppsToExpire = Get-MgApplication -All 
+  # | ForEach-Object {
 
-    Write-Host "Processing application `"$($_.DisplayName)`"."
+  #   Write-Host "Processing application `"$($_.DisplayName)`"."
 
     # $AppName = $PSItem.DisplayName
     # $AppId = $PSItem.AppId
@@ -98,10 +99,10 @@ try {
     } #>
 
     # Return if the application has no secrets to expire
-    if ($ExpiredSecrets.Count -eq 0 ) {
-      Write-Host "Application `"$AppName`" has no secrets to expire."
-      return
-    }
+    # if ($ExpiredSecrets.Count -eq 0 ) {
+    #   Write-Host "Application `"$AppName`" has no secrets to expire."
+    #   return
+    # }
 
 <#     $Owner = Get-ApplicationOwner -ApplicationObjectId $AppObjectId
 
@@ -113,7 +114,7 @@ try {
       OwnerUsername       = $Owner.Username
       ExpiredSecrets      = $ExpiredSecrets
     } #>
-  }
+  # }
 } catch {
   Write-Error "Failed to retrieve Azure AD applications."
   Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
