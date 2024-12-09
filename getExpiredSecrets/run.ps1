@@ -65,7 +65,7 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
 
 ## Retrieve all Azure AD applications and filter them by secrets to be expired
 try {
-  $AppsToExpire = Get-MgApplication -All 
+  $AppsToExpire = Get-MgApplication -All -ErrorAction Stop
   foreach ($app in $appsToExpire) {
 
     Write-Host "Processing application `"$($app.DisplayName)`"."
