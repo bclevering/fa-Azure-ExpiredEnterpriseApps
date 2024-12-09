@@ -66,19 +66,19 @@ Write-Host "Retrieving all Azure AD applications with secrets that are due to ex
 ## Retrieve all Azure AD applications and filter them by secrets to be expired
 try {
   $AppsToExpire = Get-MgApplication -All 
-  # | ForEach-Object {
+  foreach ($app in $appsToExpire) {
 
-  #   Write-Host "Processing application `"$($_.DisplayName)`"."
+    Write-Host "Processing application `"$($app.DisplayName)`"."
 
-    # $AppName = $PSItem.DisplayName
-    # $AppId = $PSItem.AppId
-    # $AppObjectId = $PSItem.Id
+    $AppName = $app.DisplayName
+    $AppId = $app.AppId
+    $AppObjectId = $app.Id
 
     # ToDo: Also check for certificates that are due to expire (KeyCredentials)
-    # $AppCredentials = Get-MgApplication -ApplicationId $AppObjectId | Select-Object PasswordCredentials
-    # $Secrets = $AppCredentials.PasswordCredentials
+    $AppCredentials = Get-MgApplication -ApplicationId $AppObjectId | Select-Object PasswordCredentials
+    $Secrets = $AppCredentials.PasswordCredentials
 
-<#     $ExpiredSecrets = New-Object -TypeName System.Collections.Generic.List[ExpiredAppCredentials]
+    $ExpiredSecrets = New-Object -TypeName System.Collections.Generic.List[ExpiredAppCredentials]
 
     foreach ($secret in $Secrets) {
       $SecretName = $secret.DisplayName
@@ -96,13 +96,13 @@ try {
             Expired        = $Remaining.TotalSeconds -le 0
           })
       }
-    } #>
+    }
 
     # Return if the application has no secrets to expire
-    # if ($ExpiredSecrets.Count -eq 0 ) {
-    #   Write-Host "Application `"$AppName`" has no secrets to expire."
-    #   return
-    # }
+    if ($ExpiredSecrets.Count -eq 0 ) {
+       Write-Host "Application `"$AppName`" has no secrets to expire."
+       return
+    }
 
 <#     $Owner = Get-ApplicationOwner -ApplicationObjectId $AppObjectId
 
@@ -114,7 +114,7 @@ try {
       OwnerUsername       = $Owner.Username
       ExpiredSecrets      = $ExpiredSecrets
     } #>
-  # }
+   }
 } catch {
   Write-Error "Failed to retrieve Azure AD applications."
   Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
