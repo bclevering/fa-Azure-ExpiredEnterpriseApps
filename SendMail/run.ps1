@@ -54,4 +54,25 @@ $htmlTable
 </html>
 "@
 
+$MailFrom = "noreply@clevering.eu"
+$MailTo = "bert@clevering.eu"
+$msgBody = $message
+
+$Message = @{
+   Subject = "Weekly report for expiring Enterprise apps secrets"
+   Body = @{
+      ContentType = "HTML"
+      Content = $msgBody
+      }
+   ToRecipients = @(
+      @{
+         EmailAddress = @{
+         Address = $MailTo
+         }
+       }
+    )
+}
+
+Send-MgUserMail -UserId $MailFrom -Message $Message
+
 $message
