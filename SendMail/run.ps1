@@ -17,6 +17,14 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
   Write-Warning "API_FUNCTION_KEY environment variable is not set. Calling the backend API may fail."
   exit 1
 }
+if (-Not (Test-Path -Path ENV:SEND_FROM)) {
+  Write-Warning "No send from address specified. So quiting"
+  exit 1
+}
+if (-Not (Test-Path -Path ENV:SEND_TO)) {
+  Write-Warning "No send to address specified. So quiting"
+  exit 1
+}
 if (-Not (Test-Path -Path ENV:WEBSITE_HOSTNAME)) {
   Write-Error "WEBSITE_HOSTNAME environment variable is not set."
   exit 1
@@ -36,43 +44,49 @@ try {
   throw $_
 }
 
-$htmlTable = $expiredSecrets |
-Select-Object -ExpandProperty ExpiredSecrets |
-ConvertTo-Html -Fragment
+try {
+  $htmlTable = $expiredSecrets |
+  Select-Object -ExpandProperty ExpiredSecrets |
+  ConvertTo-Html -Fragment
 
+  $mailTo =  $env:SEND_TO
+  $mailFrom = $env:SEND_FROM
 
-$mailMessage = @"
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>HTML TABLE</title>
-</head>
-<body>
-<h1>Expired Secrets:</h1>
-$htmlTable
-</body>
-</html>
-"@
+  $mailMessage = @("
+  <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+  <html xmlns='http://www.w3.org/1999/xhtml'>
+  <head>
+  <title>HTML TABLE</title>
+  </head>
+  <body>
+  <h1>Expired Secrets:</h1>
+  $htmlTable
+  </body>
+  </html>")
 
-$MailFrom = "bert@clevering.eu"
-$MailTo = "bert@clevering.eu"
-$msgBody = $mailMessage
+  $msgBody = $mailMessage
 
-$Message = @{
-   Subject = "Weekly report for expiring Enterprise apps secrets"
-   Body = @{
-      ContentType = "HTML"
-      Content = $msgBody
-      }
-   ToRecipients = @(
-      @{
-         EmailAddress = @{
-         Address = $MailTo
-         }
-       }
-    )
+  $Message = @{
+    Subject = "Weekly report for expiring Enterprise apps secrets"
+    Body = @{
+        ContentType = "HTML"
+        Content = $msgBody
+        }
+    ToRecipients = @(
+        @{
+          EmailAddress = @{
+          Address = $mailTo
+          }
+        }
+      )
+  }
+
+  Send-MgUserMail -userid $mailFrom -BodyParameter $Message
+}
+catch {
+  Write-Error "Failed to get send e-mail."
+  throw $_
 }
 
-Send-MgUserMail -userid $MailFrom -BodyParameter $Message
 
 $mailMessage
