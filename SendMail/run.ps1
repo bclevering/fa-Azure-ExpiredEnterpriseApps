@@ -36,7 +36,7 @@ try {
   Write-Host "Calling API at $apiEndpointUrl with Function Key. $($apiFunctionKey)"
 
   $apiEndpointUrl = "https://$($env:WEBSITE_HOSTNAME)/api/GetExpiredSecrets?code=$($apiFunctionKey)"
-  $expiredSecrets = Invoke-RestMethod -Method Get -Uri $apiEndpointUrl -OperationTimeoutSeconds 60 -ConnectionTimeoutSeconds 65
+  $expiredSecrets = Invoke-RestMethod -Method Get -Uri $apiEndpointUrl
 
   $expiredSecrets | Select-Object -Property ApplicationName, OwnerUsername -ExpandProperty ExpiredSecrets
 } catch {
