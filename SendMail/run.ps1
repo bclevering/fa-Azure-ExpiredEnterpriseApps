@@ -41,7 +41,7 @@ Select-Object -ExpandProperty ExpiredSecrets |
 ConvertTo-Html -Fragment
 
 
-$message = @"
+$mailMessage = @"
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -54,9 +54,9 @@ $htmlTable
 </html>
 "@
 
-$MailFrom = "noreply@clevering.eu"
+$MailFrom = "bert@clevering.eu"
 $MailTo = "bert@clevering.eu"
-$msgBody = $message
+$msgBody = $mailMessage
 
 $Message = @{
    Subject = "Weekly report for expiring Enterprise apps secrets"
@@ -73,6 +73,6 @@ $Message = @{
     )
 }
 
-Send-MgUserMail -UserId $MailFrom -Message $Message
+Send-MgUserMail -userid $MailFrom -BodyParameter $Message
 
-$message
+$mailMessage
