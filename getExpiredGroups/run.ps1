@@ -12,6 +12,24 @@ if ($Timer.IsPastDue) {
 $currentUTCtime = (Get-Date).ToUniversalTime()
 Write-Host "PowerShell timer trigger function ran! TIME: $currentUTCtime"
 
+## Check existance of required environment variables
+if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
+  Write-Warning "API_FUNCTION_KEY environment variable is not set. Calling the backend API may fail."
+  exit 1
+}
+if (-Not (Test-Path -Path ENV:SEND_FROM)) {
+  Write-Warning "No send from address specified. So quiting"
+  exit 1
+}
+if (-Not (Test-Path -Path ENV:SEND_TO_ExpiredGroups)) {
+  Write-Warning "No send to address specified. So quiting"
+  exit 1
+}
+if (-Not (Test-Path -Path ENV:WEBSITE_HOSTNAME)) {
+  Write-Error "WEBSITE_HOSTNAME environment variable is not set."
+  exit 1
+}
+
 
 $ErrorActionPreference = "Stop"
 $DueDays = 30
