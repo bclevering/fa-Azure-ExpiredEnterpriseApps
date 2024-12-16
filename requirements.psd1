@@ -9,4 +9,5 @@
   'Microsoft.Graph.Authentication' = '2.*'
   'Microsoft.Graph.Applications'   = '2.*'
   'Microsoft.Graph.Users.Actions'  = '2.*'
+  'Microsoft.Graph.Groups'         = '2.*'
 }
