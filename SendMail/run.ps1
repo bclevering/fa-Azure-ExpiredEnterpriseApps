@@ -67,25 +67,28 @@ try {
 
   $msgBody = $mailMessage
 
-  $Message = @{
-    Subject = "Weekly report for expiring Enterprise apps secrets"
-    Body = @{
-        ContentType = "HTML"
-        Content = $msgBody
-        }
-    ToRecipients = @(
-        @{
-          EmailAddress = @{
-          Address = $mailTo
+  $params = @{
+    message = @{
+      Subject = "Weekly report for expiring Enterprise apps secrets"
+      Body = @{
+          ContentType = "HTML"
+          Content = $msgBody
           }
-        }
-      )
+      ToRecipients = @(
+          @{
+            EmailAddress = @{
+            Address = $mailTo
+            }
+          }
+        )
+    }
+    saveToSentItems = "false"
   }
 
-  Send-MgUserMail -userid $mailFrom -BodyParameter $Message -Message $msgBody
+  Send-MgUserMail -userid $mailFrom -BodyParameter $params
 }
 catch {
-  Write-Error "Failed to get send e-mail."
+  Write-Error "Failed to send e-mail."
   throw $_
 }
 
