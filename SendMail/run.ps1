@@ -33,6 +33,7 @@ if (-Not (Test-Path -Path ENV:WEBSITE_HOSTNAME)) {
 try {
 
   $apiFunctionKey = $env:API_FUNCTION_KEY
+  $apiEndpointUrl = $env:WEBSITE_HOSTNAME
   Write-Host "Calling API at $apiEndpointUrl with Function Key. $($apiFunctionKey)"
 
   $apiEndpointUrl = "https://$($env:WEBSITE_HOSTNAME)/api/GetExpiredSecrets?code=$($apiFunctionKey)"
@@ -59,7 +60,7 @@ try {
   <title>HTML TABLE</title>
   </head>
   <body>
-  <h1>Expired Secrets:</h1>
+  <h1>Expired and bound to expire secrets:</h1>
   $htmlTable
   </body>
   </html>")
@@ -81,7 +82,7 @@ try {
       )
   }
 
-  Send-MgUserMail -userid $mailFrom -BodyParameter $Message
+  Send-MgUserMail -userid $mailFrom -BodyParameter $Message -Message $msgBody
 }
 catch {
   Write-Error "Failed to get send e-mail."
