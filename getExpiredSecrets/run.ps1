@@ -2,6 +2,13 @@
 param($Request, $TriggerMetadata)
 
 $ErrorActionPreference = "Stop"
+$DueDays = 30
+
+if (-Not (Test-Path -Path ENV:DUE_DAYS)) {
+  $DueDays = $env:DUE_DAYS
+}
+
+
 
 function Get-ApplicationOwner {
   param (
@@ -44,24 +51,6 @@ Write-Host "Received $requestMethod request from $remoteAddress. User Agent: $($
 # ...
 
 $Now = Get-Date
-
-try {
-  $headers = $request.Headers
-  
-  $DueDays = $headers["Days"]
-
-  if (-not $DueDays) {
-    Write-Host "No days parameter provided, using default value of 30 days."
-    $DueDays = 30
-  }
-} catch {
-  Write-Error "Failed to retrieve days parameter from request body."
-  Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
-      StatusCode = [System.Net.HttpStatusCode]::BadRequest
-      Body       = "Failed to retrieve days parameter from request body."
-    }) -Clobber
-  throw $_
-}
 
 Write-Host "Retrieving all Azure AD applications with secrets that are due to expire in $DueDays days or less."
 
