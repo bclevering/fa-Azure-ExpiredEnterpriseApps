@@ -48,8 +48,8 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
     $GroupsToExpire = Get-MgGroup -All -ErrorAction $ErrorActionPreference | ForEach-Object {
       $GroupName = $PSItem.DisplayName
       Write-Host "Processing group `"$($GroupName)`"."
-      
-      $GroupExpirationTime = $group.ExpirationDateTime 
+
+      $GroupExpirationTime = $PSItem.ExpirationDateTime 
       $GroupRemaining = $GroupExpirationTime - $Now
   
       $ExpiredGroups = New-Object -TypeName System.Collections.Generic.List
@@ -59,8 +59,8 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
           $ExpiredGroups.Add(@{
               GroupName     = $GroupName
               ExpirationTime = $GroupExpirationTime
-              RemainingDays  = $Remaining.Days
-              Expired        = $Remaining.TotalSeconds -le 0
+              RemainingDays  = $GroupRemaining.Days
+              Expired        = $GroupRemaining.TotalSeconds -le 0
             })
         }
       }
