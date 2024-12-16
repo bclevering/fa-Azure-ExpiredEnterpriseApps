@@ -45,12 +45,10 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
   
   ## Retrieve all Azure AD applications and filter them by secrets to be expired
   try {
-    $GroupsToExpire = Get-MgGroup -All -ErrorAction Stop | ForEach-Object {
-  
-      Write-Host "Processing group `"$($_.DisplayName)`"."
-  
+    $GroupsToExpire = Get-MgGroup -All -ErrorAction $ErrorActionPreference | ForEach-Object {
       $GroupName = $PSItem.DisplayName
-  
+      Write-Host "Processing group `"$($GroupName)`"."
+      
       $GroupExpirationTime = $group.ExpirationDateTime 
       $GroupRemaining = $GroupExpirationTime - $Now
   
@@ -76,10 +74,6 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
       return $ExpiredGroups
   } catch {
     Write-Error "Failed to retrieve M365 groups."
-    Push-OutputBinding -Name response -Value ([HttpResponseContext]@{
-        StatusCode = [System.Net.HttpStatusCode]::InternalServerError
-        Body       = "Failed to retrieve Azure AD applications."
-      }) -Clobber
     throw $_
   }
   
@@ -87,7 +81,6 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
   
   try {
     $htmlTable = $GroupsToExpire |
-    Select-Object -ExpandProperty ExpiredSecrets |
     ConvertTo-Html -Fragment
   
     $mailTo =  $env:SEND_TO_ExpiredGroups
