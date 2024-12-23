@@ -46,32 +46,32 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
   ## Retrieve all Azure AD applications and filter them by secrets to be expired
   try {
     $GroupsToExpire = Get-MgGroup -All -ErrorAction $ErrorActionPreference | ForEach-Object {
-      $GroupName = $PSItem.DisplayName
-      Write-Host "Processing group `"$($GroupName)`"."
+        $GroupName = $PSItem.DisplayName
+        Write-Host "Processing group `"$($GroupName)`"."
 
-      $GroupExpirationTime = $PSItem.ExpirationDateTime 
-      $GroupRemaining = $GroupExpirationTime - $Now
+        $GroupExpirationTime = $PSItem.ExpirationDateTime 
+        $GroupRemaining = $GroupExpirationTime - $Now
   
-      $ExpiredGroups = New-Object -TypeName System.Collections.Generic.List
+    #   $ExpiredGroups = New-Object -TypeName System.Collections.Generic.List
   
-        if ($GroupRemaining.Days -le $DueDays) {
+    #     if ($GroupRemaining.Days -le $DueDays) {
   
-          $ExpiredGroups.Add(@{
-              GroupName     = $GroupName
-              ExpirationTime = $GroupExpirationTime
-              RemainingDays  = $GroupRemaining.Days
-              Expired        = $GroupRemaining.TotalSeconds -le 0
-            })
-        }
-      }
+    #       $ExpiredGroups.Add(@{
+    #           GroupName     = $GroupName
+    #           ExpirationTime = $GroupExpirationTime
+    #           RemainingDays  = $GroupRemaining.Days
+    #           Expired        = $GroupRemaining.TotalSeconds -le 0
+    #         })
+    #     }
+    #   }
   
-      # Return if the application has no secrets to expire
-      if ($ExpiredGroups.Count -eq 0 ) {
-         Write-Host "No Groups has to expire."
-         return
-      }
+    #   # Return if the application has no secrets to expire
+    #   if ($ExpiredGroups.Count -eq 0 ) {
+    #      Write-Host "No Groups has to expire."
+    #      return
+       }
   
-      return $ExpiredGroups
+       return "OK"
   } catch {
     Write-Error "Failed to retrieve M365 groups."
     throw $_
@@ -79,53 +79,53 @@ if (-Not (Test-Path -Path ENV:API_FUNCTION_KEY)) {
   
   
   
-  try {
-    $htmlTable = $GroupsToExpire |
-    ConvertTo-Html -Fragment
+#   try {
+#     $htmlTable = $GroupsToExpire |
+#     ConvertTo-Html -Fragment
   
-    $mailTo =  $env:SEND_TO_ExpiredGroups
-    $mailFrom = $env:SEND_FROM
+#     $mailTo =  $env:SEND_TO_ExpiredGroups
+#     $mailFrom = $env:SEND_FROM
   
-    $mailMessage = 
-@" 
-    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-    <html xmlns='http://www.w3.org/1999/xhtml'>
-    <head>
-    <title>HTML TABLE</title>
-    </head>
-    <body>
-    <h1>Expired and bound to expire M365 Groups:</h1>
-    $htmlTable
-    </body>
-    </html>
-"@
+#     $mailMessage = 
+# @" 
+#     <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'  'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+#     <html xmlns='http://www.w3.org/1999/xhtml'>
+#     <head>
+#     <title>HTML TABLE</title>
+#     </head>
+#     <body>
+#     <h1>Expired and bound to expire M365 Groups:</h1>
+#     $htmlTable
+#     </body>
+#     </html>
+# "@
   
-    $msgBody = $mailMessage
+#     $msgBody = $mailMessage
   
-    $params = @{
-      message = @{
-        Subject = "Weekly report for expiring M365 Groups"
-        Body = @{
-            ContentType = "HTML"
-            Content = $msgBody
-            }
-        ToRecipients = @(
-            @{
-              EmailAddress = @{
-              Address = $mailTo
-              }
-            }
-          )
-      }
-      saveToSentItems = "false"
-    }
+#     $params = @{
+#       message = @{
+#         Subject = "Weekly report for expiring M365 Groups"
+#         Body = @{
+#             ContentType = "HTML"
+#             Content = $msgBody
+#             }
+#         ToRecipients = @(
+#             @{
+#               EmailAddress = @{
+#               Address = $mailTo
+#               }
+#             }
+#           )
+#       }
+#       saveToSentItems = "false"
+#     }
   
-    Send-MgUserMail -userid $mailFrom -BodyParameter $params
-  }
-  catch {
-    Write-Error "Failed to send e-mail."
-    throw $_
-  }
+#     Send-MgUserMail -userid $mailFrom -BodyParameter $params
+#   }
+#   catch {
+#     Write-Error "Failed to send e-mail."
+#     throw $_
+#   }
   
   
-  $mailMessage
+#   $mailMessage
